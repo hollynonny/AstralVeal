@@ -43,6 +43,10 @@ namespace PlayerFol
         
             InputHandler.Instance.OnDashStarted += OnDashStarted;
             InputHandler.Instance.OnDashStopped += OnDashStopped;
+
+            InputHandler.Instance.OnModeToggled += OnModeToggle;
+
+            _playerMovement.AstralSystem.AstralStateChanged += _playerMovement.ToggleAstralGravity;
         }
     
         private void OnDisable()
@@ -54,6 +58,10 @@ namespace PlayerFol
         
             InputHandler.Instance.OnDashStarted -= OnDashStarted;
             InputHandler.Instance.OnDashStopped -= OnDashStopped;
+            
+            InputHandler.Instance.OnModeToggled -= OnModeToggle;
+            
+            _playerMovement.AstralSystem.AstralStateChanged -= _playerMovement.ToggleAstralGravity;
         }
     
         private void OnMove(Vector2 input)
@@ -80,6 +88,11 @@ namespace PlayerFol
         private void OnDashStopped()
         {
             _playerMovement.OnDashStopped();
+        }
+
+        private void OnModeToggle()
+        {
+            _playerMovement.ToggleAstralMode();
         }
 
         private void FixedUpdate()

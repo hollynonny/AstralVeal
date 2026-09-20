@@ -5,21 +5,20 @@ namespace PlayerFol.PlStates
     public class JumpState : PlayerState
     {
         private float _maxJumpTimer;
-        private float _jumpMultiplier = 1.0f;
         
         public JumpState(PlayerMovement movement) : base(movement) { }
 
         public override void Enter()
         {
             _maxJumpTimer = Movement.PlayerJumpData.MaxJumpHoldTime;
-            Movement.ApplyJumpForce(_jumpMultiplier);
+            Movement.ApplyJumpForce();
         }
 
         public override void LogicUpdate()
         {
             _maxJumpTimer -= Time.deltaTime;
 
-            if (Movement.PlayerFlags.IsDashed)
+            if (!Movement.AstralSystem.IsAstral && Movement.PlayerFlags.IsDashed)
             {
                 Movement.TurnDashedOff();
                 Movement.StateManager.ChangeState(Movement.PlayerStates.DashState);
@@ -32,7 +31,7 @@ namespace PlayerFol.PlStates
                 return;
             }
             
-            if (Movement.IsTouchingWall())
+            if (!Movement.AstralSystem.IsAstral && Movement.IsTouchingWall())
             {
                 Movement.StateManager.ChangeState(Movement.PlayerStates.WallSlidingState);
                 return;

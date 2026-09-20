@@ -8,7 +8,7 @@ namespace PlayerFol.PlStates
 
         public override void LogicUpdate()
         {
-            if (Movement.PlayerFlags.IsDashed)
+            if (!Movement.AstralSystem.IsAstral && Movement.PlayerFlags.IsDashed)
             {
                 Movement.TurnDashedOff();
                 Movement.StateManager.ChangeState(Movement.PlayerStates.DashState);
@@ -21,7 +21,7 @@ namespace PlayerFol.PlStates
                 return;
             }
 
-            if (Movement.IsTouchingWall())
+            if (!Movement.AstralSystem.IsAstral && Movement.IsTouchingWall())
             {
                 Movement.StateManager.ChangeState(Movement.PlayerStates.WallSlidingState);
                 return;

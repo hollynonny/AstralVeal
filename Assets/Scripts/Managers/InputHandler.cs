@@ -18,6 +18,7 @@ namespace Managers
         private InputAction _jumpAction;
         private InputAction _attackAction;
         private InputAction _dashAction;
+        private InputAction _modeToggleAction;
     
         // Connection with other GameObjects
         public event Action<Vector2> OnMove;
@@ -26,6 +27,7 @@ namespace Managers
         public event Action OnAttack;
         public event Action OnDashStarted;
         public event Action OnDashStopped;
+        public event Action OnModeToggled;
 
         private void Awake()
         {
@@ -38,6 +40,7 @@ namespace Managers
             _jumpAction = _playerActionMap.FindAction("Jump");
             _attackAction = _playerActionMap.FindAction("Attack");
             _dashAction = _playerActionMap.FindAction("Dash");
+            _modeToggleAction = _playerActionMap.FindAction("ModeToggle");
 
             if (Instance == null)
             {
@@ -61,6 +64,9 @@ namespace Managers
             _dashAction.Enable();
             _dashAction.performed += OnDashPerformed;
             _dashAction.canceled += OnDashCanceled;
+            
+            _modeToggleAction.Enable();
+            _modeToggleAction.performed += OnModeToggle;
         }
     
         private void OnDisable()
@@ -79,6 +85,9 @@ namespace Managers
             _dashAction.performed -= OnDashPerformed;
             _dashAction.canceled -= OnDashCanceled;
             _dashAction.Disable();
+            
+            _modeToggleAction.performed -= OnModeToggle;
+            _modeToggleAction.Disable();
         }
 
         private void OnMovePerformed(InputAction.CallbackContext context)
@@ -115,14 +124,10 @@ namespace Managers
         {
             OnDashStopped?.Invoke();
         }
-    
-        void Start()
-        {
-        }
 
-        void Update()
+        private void OnModeToggle(InputAction.CallbackContext context)
         {
-        
+            OnModeToggled?.Invoke();
         }
     }
 }

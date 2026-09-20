@@ -9,11 +9,11 @@ namespace PlayerFol
         #region Variables
         
         public PlayerData PlayerData { get; private set; }
-
-        public PlayerStateManager StateManager { get; private set; }
-        
         public PlayerStates PlayerStates { get; private set; }
         public PlayerFlags PlayerFlags { get; private set; }
+
+        public PlayerStateManager StateManager { get; private set; }
+        public AstralSystem AstralSystem { get; private set; }
         
         public PlayerParameters PlayerParameters { get; } = new();
         public PlayerJumpData PlayerJumpData { get; } = new();
@@ -34,6 +34,8 @@ namespace PlayerFol
             
             StateManager = new PlayerStateManager();
             StateManager.Initialize(PlayerStates.MoveState);
+            
+            AstralSystem = new AstralSystem();
         }
         
         #endregion
@@ -65,7 +67,7 @@ namespace PlayerFol
         
         #region Jump Methods
         
-        public void ApplyJumpForce(float multiplier)
+        public void ApplyJumpForce()
         {
             PlayerJumpData.JumpBufferCounter = 0.0f;
             PlayerJumpData.CoyoteTimeCounter = 0.0f;
@@ -83,8 +85,8 @@ namespace PlayerFol
             }
 
             PlayerData.Rigidbody.linearVelocity = new Vector2(
-                direction,
-                PlayerParameters.JumpForce * multiplier
+                direction * AstralSystem.MovementMultiplier,
+                PlayerParameters.JumpForce * AstralSystem.JumpMultiplier
             );
         }
 
@@ -178,6 +180,7 @@ namespace PlayerFol
         
         public void OnDashStarted()
         {
+            if (AstralSystem.IsAstral) return;
             if (!PlayerFlags.CanDash || PlayerFlags.IsDashing) return;
 
             PlayerFlags.IsDashHeld = true;
@@ -222,11 +225,34 @@ namespace PlayerFol
         
         #endregion
 
+        #region Astral Methods
+
+        public void ToggleAstralMode()
+        {
+            if(!AstralSystem.IsAstral)
+                AstralSystem.EnterAstralState();
+            else
+                AstralSystem.ExitAstralState();
+            
+            Debug.Log($"Astral mode is toggled\nCurrent mode: {(AstralSystem.IsAstral ? "Astral" : "Physics")}");
+        }
+        
+        #endregion
+        
         #region Gravity Methods
         
         public void TurnOnGravity()
         {
-            PlayerData.Rigidbody.gravityScale = PlayerParameters.DefaultGravityScale;
+            PlayerData.Rigidbody.gravityScale = 
+                PlayerParameters.DefaultGravityScale 
+                * AstralSystem.GravityMultiplier;
+        }
+
+        public void ToggleAstralGravity()
+        {
+            PlayerData.Rigidbody.gravityScale = 
+                PlayerParameters.DefaultGravityScale 
+                * AstralSystem.GravityMultiplier;
         }
         
         #endregion

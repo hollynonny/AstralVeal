@@ -8,7 +8,7 @@ namespace PlayerFol.PlStates
 
         public override void LogicUpdate()
         {
-            if (Movement.PlayerFlags.IsDashed)
+            if (Movement.PlayerFlags.IsDashed && !Movement.AstralSystem.IsAstral)
             {
                 Movement.TurnDashedOff();
                 Movement.StateManager.ChangeState(Movement.PlayerStates.DashState);

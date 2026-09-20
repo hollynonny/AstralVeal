@@ -16,7 +16,7 @@ namespace PlayerFol.PlStates
             base.PhysicsUpdate();
             
             Movement.PlayerData.Rigidbody.linearVelocity = new Vector2(
-                Movement.PlayerData.MoveInput.x * Movement.PlayerParameters.Speed,
+                Movement.PlayerData.MoveInput.x * Movement.PlayerParameters.Speed * Movement.AstralSystem.MovementMultiplier,
                 Movement.PlayerData.Rigidbody.linearVelocity.y
             );
         }
